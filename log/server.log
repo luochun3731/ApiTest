@@ -1,0 +1,15 @@
+[%(asctime)s] - [%(levelname)s] - %(message)s
+[%(asctime)s] - [%(levelname)s] - %(message)s
+[2017-07-19 14:00:56,146] - [INFO] - {121: {'name': 'test', 'password': '123'}}
+[2017-07-19 14:00:57,963] - [INFO] - {121: {'name': 'test', 'password': '123'}}
+[2017-07-19 14:23:16,032] - [INFO] - {}
+[2017-07-19 14:23:18,354] - [INFO] - {121: {'password': '123', 'name': 'test'}}
+[2017-07-19 14:29:02,876] - [INFO] - {}
+[2017-07-19 14:34:18,650] - [INFO] - before create: {}
+[2017-07-19 14:34:18,650] - [INFO] - after create: {1000: {'password': '123456', 'name': 'user1'}}
+[2017-07-19 14:37:43,697] - [INFO] - before create: {1000: {'password': '123456', 'name': 'user1'}}
+[2017-07-19 14:37:43,698] - [INFO] - after create: {1000: {'password': '123456', 'name': 'user1'}}
+[2017-07-19 14:38:16,564] - [INFO] - before create: {1000: {'password': '123456', 'name': 'user1'}}
+[2017-07-19 14:38:16,565] - [INFO] - after create: {1000: {'password': '123456', 'name': 'user1'}, 1001: {'password': '123456', 'name': 'user1'}}
+[2017-07-19 16:53:22,192] - [INFO] - before create: {}
+[2017-07-19 16:53:22,219] - [INFO] - after create: {200: {'name': 'jack', 'password': 'xtb147258'}}

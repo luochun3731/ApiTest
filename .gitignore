@@ -1,0 +1,11 @@
+*.pyc
+__pycache__
+.DS_Store
+*/tmp/*
+build/*
+dist/*
+*.egg-info
+.python-version
+logs/%
+.coverage
+.idea
