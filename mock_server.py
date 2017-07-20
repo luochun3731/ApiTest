@@ -7,7 +7,16 @@ from flask import Flask
 from flask import request, make_response
 
 app = Flask(__name__)
-users = {}
+users = {
+    'uid1': {
+        'name': 'name1',
+        'password': 'pwd1'
+    },
+    'uid2': {
+        'name': 'name2',
+        'password': 'pwd2'
+    }
+}
 
 log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'log/server.log')
 # log_file = os.path.join(os.getcwd(), 'log/server.log')
@@ -37,6 +46,41 @@ def start_mock_server():
     app.run()
 
 
+@app.route('/api/users/')
+def get_all_users():
+    user_list = [user for uid, user in users.items()]
+    result = {
+        'success': True,
+        'count': len(user_list),
+        'items': user_list
+    }
+    status_code = 200
+    response = make_response(json.dumps(result), status_code)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+
+@app.route('/api/users/<int:uid>/')
+def get_user(uid):
+    user = users.get(uid, {})
+    if user:
+        result = {
+            'success': True,
+            'data': user
+        }
+        status_code = 200
+    else:
+        result = {
+            'success': False,
+            'data': user
+        }
+        status_code = 404
+
+    response = make_response(json.dumps(result), status_code)
+    response.headers["Content-Type"] = "application/json"
+    return response
+
+
 @app.route('/api/users/<int:uid>/', methods=['POST'])
 def create_user(uid):
     app.logger.info('before create: ' + str(users))
@@ -46,7 +90,7 @@ def create_user(uid):
             'success': True,
             'msg': 'user created successfully!'
         }
-        status_code = 205
+        status_code = 200
         users[uid] = user
     else:
         result = {
@@ -57,6 +101,45 @@ def create_user(uid):
     app.logger.info('after create: ' + str(users))
     response = make_response(json.dumps(result), status_code)
     response.headers['Content-Type'] = 'application/json'
+    return response
+
+
+@app.route('/api/users/<int:uid>/', methods=['PUT'])
+def update_user(uid):
+    user = users.get(uid, {})
+    if user:
+        user = request.get_json()
+        success = True
+        status_code = 200
+    else:
+        success = False
+        status_code = 404
+
+    result = {
+        'success': success,
+        'data': user
+    }
+    response = make_response(json.dumps(result), status_code)
+    response.headers["Content-Type"] = "application/json"
+    return response
+
+
+@app.route('/api/users/<int:uid>/', methods=['DELETE'])
+def delete_user(uid):
+    user = users.pop(uid, {})
+    if user:
+        success = True
+        status_code = 200
+    else:
+        success = False
+        status_code = 404
+
+    result = {
+        'success': success,
+        'data': user
+    }
+    response = make_response(json.dumps(result), status_code)
+    response.headers["Content-Type"] = "application/json"
     return response
 
 
