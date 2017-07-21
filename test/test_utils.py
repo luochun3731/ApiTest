@@ -67,10 +67,24 @@ class TestUtils(TestBase):
         self.assertEqual(32, len(md5))
         self.assertIsInstance(md5, str)
 
-    def test_parse_response(self):
+    def test_parse_response_json(self):
         url = "http://127.0.0.1:5000/api/users"
         resp = requests.get(url)
         parse_result = utils.parse_response(resp)
         self.assertIn('status_code', parse_result)
         self.assertIn('headers', parse_result)
         self.assertIn('content', parse_result)
+        self.assertIn('Content-Type', parse_result['headers'])
+        self.assertIn('Content-Length', parse_result['headers'])
+        self.assertIn('success', parse_result['content'])
+
+    def test_parse_response_text(self):
+        url = "http://127.0.0.1:5000/"
+        resp = requests.get(url)
+        parse_result = utils.parse_response(resp)
+        self.assertIn('status_code', parse_result)
+        self.assertIn('headers', parse_result)
+        self.assertIn('content', parse_result)
+        self.assertIn('Content-Type', parse_result['headers'])
+        self.assertIn('Content-Length', parse_result['headers'])
+        self.assertTrue(str, type(parse_result['content']))

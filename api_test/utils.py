@@ -38,10 +38,14 @@ def load_test_cases(test_cases_path):
 
 
 def parse_response(resp):
+    try:
+        resp_content = resp.json()
+    except json.decoder.JSONDecodeError:
+        resp_content = resp.text
     return {
         'status_code': resp.status_code,
         'headers': resp.headers,
-        'content': resp.content
+        'content': resp_content
     }
 
 if __name__ == '__main__':

@@ -46,6 +46,16 @@ def start_mock_server():
     app.run()
 
 
+@app.route('/')
+def index():
+    return 'Hello Python!'
+
+
+@app.route('/status_code/<int:status_code>/')
+def get_response_with_status_code(status_code):
+    return 'Status Code: %d' % status_code, status_code
+
+
 @app.route('/api/users/')
 def get_all_users():
     user_list = [user for uid, user in users.items()]

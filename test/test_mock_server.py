@@ -1,3 +1,5 @@
+import random
+
 import requests
 
 from test.test_base import TestBase
@@ -96,3 +98,9 @@ class TestMockServer(TestBase):
         resp = self.delete_user(7788)
         self.assertEqual(404, resp.status_code)
         self.assertEqual(False, resp.json()['success'])
+
+    def test_get_response_with_status_code(self):
+        status_code = random.randint(200, 520)
+        url = '%s/status_code/%d/' % (self.host, status_code)
+        resp = self.client.get(url)
+        self.assertEqual(status_code, resp.status_code)
