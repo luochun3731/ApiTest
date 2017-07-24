@@ -1,4 +1,5 @@
 import os
+import random
 
 import requests
 
@@ -73,10 +74,10 @@ class TestUtils(TestBase):
         parse_result = utils.parse_response(resp)
         self.assertIn('status_code', parse_result)
         self.assertIn('headers', parse_result)
-        self.assertIn('content', parse_result)
+        self.assertIn('body', parse_result)
         self.assertIn('Content-Type', parse_result['headers'])
         self.assertIn('Content-Length', parse_result['headers'])
-        self.assertIn('success', parse_result['content'])
+        self.assertIn('success', parse_result['body'])
 
     def test_parse_response_text(self):
         url = "http://127.0.0.1:5000/"
@@ -84,7 +85,176 @@ class TestUtils(TestBase):
         parse_result = utils.parse_response(resp)
         self.assertIn('status_code', parse_result)
         self.assertIn('headers', parse_result)
-        self.assertIn('content', parse_result)
+        self.assertIn('body', parse_result)
         self.assertIn('Content-Type', parse_result['headers'])
         self.assertIn('Content-Length', parse_result['headers'])
-        self.assertTrue(str, type(parse_result['content']))
+        self.assertTrue(str, type(parse_result['body']))
+
+    def test_diff_response_status_code_equal(self):
+        status_code = random.randint(200, 520)
+        url = 'http://127.0.0.1:5000/status_code/%d/' % status_code
+        resp = requests.get(url)
+        exp_resp = {
+            'status_code': status_code
+        }
+        diff_content = utils.diff_response(resp, exp_resp)
+        self.assertFalse(diff_content)
+
+    def test_diff_response_status_code_not_equal(self):
+        status_code = random.randint(200, 520)
+        url = 'http://127.0.0.1:5000/status_code/%d/' % status_code
+        resp = requests.get(url)
+        exp_resp = {
+            'status_code': 512
+        }
+        diff_content = utils.diff_response(resp, exp_resp)
+        print('diff_content: ', diff_content)
+        self.assertIn('actual value', diff_content['status_code'])
+        self.assertIn('expected value', diff_content['status_code'])
+        self.assertEqual(diff_content['status_code']['actual value'], status_code)
+        self.assertEqual(diff_content['status_code']['expected value'], 512)
+
+    def test_diff_response_headers_equal(self):
+        resp = requests.post(
+            url='http://127.0.0.1:5000/custom_response/',
+            json={
+                'headers': {
+                    'test01': 123,
+                    'test02': 456
+                }
+            }
+        )
+        exp_resp_json = {
+            'headers': {
+                'test01': 123,
+                'test02': '456'
+            }
+        }
+        diff_content = utils.diff_response(resp, exp_resp_json)
+        self.assertFalse(diff_content)
+
+    def test_diff_response_headers_not_equal(self):
+        resp = requests.post(
+            url="http://127.0.0.1:5000/custom_response/",
+            json={
+                'headers': {
+                    'test01': 123,
+                    'test02': '456',
+                    'test03': '789'
+                }
+            }
+        )
+
+        exp_resp_json = {
+            'headers': {
+                'test01': '123',
+                'test02': '457',
+                'test04': 890
+            }
+        }
+        diff_content = utils.diff_response(resp, exp_resp_json)
+        self.assertEqual(
+            diff_content['headers'],
+            {
+                'test02': {'expected value': '457', 'actual value': '456'},
+                'test04': {'expected value': 890, 'actual value': None}
+            }
+        )
+
+    def test_diff_response_body_equal(self):
+        resp = requests.post(
+            url='http://127.0.0.1:5000/custom_response/',
+            json={
+                'body': {
+                    'success': True,
+                    'count': 10
+                }
+            }
+        )
+
+        exp_resp_json = {}
+        diff_content = utils.diff_response(resp, exp_resp_json)
+        self.assertFalse(diff_content)
+
+        exp_resp_json = {
+            'body': {
+                'success': True,
+                'count': '10'
+            }
+        }
+        diff_content = utils.diff_response(resp, exp_resp_json)
+        self.assertFalse(diff_content)
+
+    def test_diff_response_body_not_equal_type_unmatch(self):
+        resp = requests.post(
+            url='http://127.0.0.1:5000/custom_response/',
+            json={
+                'body': {
+                    'success': True,
+                    'count': 10
+                }
+            }
+        )
+
+        exp_resp_json = {
+            'body': "ok"
+        }
+        diff_content = utils.diff_response(resp, exp_resp_json)
+        self.assertEqual(
+            diff_content['body'],
+            {
+                'actual value': {'success': True, 'count': 10},
+                'expected value': 'ok'
+            }
+        )
+
+    def test_diff_response_body_not_equal_string_unmatch(self):
+        resp = requests.post(
+            url='http://127.0.0.1:5000/custom_response/',
+            json={
+                'body': "success"
+            }
+        )
+
+        exp_resp_json = {
+            'body': "ok"
+        }
+        diff_content = utils.diff_response(resp, exp_resp_json)
+        self.assertEqual(
+            diff_content['body'],
+            {
+                'actual value': 'success',
+                'expected value': 'ok'
+            }
+        )
+
+    def test_diff_response_body_not_equal_json_unmatch(self):
+        resp = requests.post(
+            url='http://127.0.0.1:5000/custom_response/',
+            json={
+                'body': {
+                    'success': False
+                }
+            }
+        )
+
+        exp_resp_json = {
+            'body': {
+                'success': True,
+                'count': 10
+            }
+        }
+        diff_content = utils.diff_response(resp, exp_resp_json)
+        self.assertEqual(
+            diff_content['body'],
+            {
+                'success': {
+                    'actual value': False,
+                    'expected value': True
+                },
+                'count': {
+                    'actual value': None,
+                    'expected value': 10
+                }
+            }
+        )

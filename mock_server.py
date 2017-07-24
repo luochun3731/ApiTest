@@ -56,6 +56,28 @@ def get_response_with_status_code(status_code):
     return 'Status Code: %d' % status_code, status_code
 
 
+@app.route('/response_headers/', methods=['POST'])
+def get_response_with_headers():
+    headers_dict = request.get_json()
+    content = 'Response headers: %s' % json.dumps(headers_dict)
+    response = make_response(content)
+    for header_key, header_value in headers_dict.items():
+        response.headers[header_key] = header_value
+    return response
+
+
+@app.route('/custom_response/', methods=['POST'])
+def get_custom_response():
+    exp_resp_json = request.get_json()
+    status_code = exp_resp_json.get('status_code', 200)
+    headers_dict = exp_resp_json.get('headers', {})
+    body = exp_resp_json.get('body', {})
+    response = make_response(json.dumps(body), status_code)
+    for header_key, header_value in headers_dict.items():
+        response.headers[header_key] = header_value
+    return response
+
+
 @app.route('/api/users/')
 def get_all_users():
     user_list = [user for uid, user in users.items()]

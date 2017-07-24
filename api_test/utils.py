@@ -39,14 +39,66 @@ def load_test_cases(test_cases_path):
 
 def parse_response(resp):
     try:
-        resp_content = resp.json()
+        resp_body = resp.json()
     except json.decoder.JSONDecodeError:
-        resp_content = resp.text
+        resp_body = resp.text
     return {
         'status_code': resp.status_code,
         'headers': resp.headers,
-        'content': resp_content
+        'body': resp_body
     }
+
+
+def diff_json(actual_json, exp_json):
+    diff_json_content = {}
+    for key, exp_value in exp_json.items():
+        value = actual_json.get(key, None)
+        if str(value) != str(exp_value):
+            diff_json_content[key] = {
+                'actual value': value,
+                'expected value': exp_value
+            }
+    return diff_json_content
+
+
+def diff_response(resp, exp_resp_json):
+    diff_content = {}
+    resp_info = parse_response(resp)
+
+    exp_status_code = exp_resp_json.get('status_code', 200)
+    if resp_info['status_code'] != int(exp_status_code):
+        diff_content['status_code'] = {
+            'actual value': resp_info['status_code'],
+            'expected value': exp_status_code
+        }
+
+    exp_headers = exp_resp_json.get('headers', {})
+    diff_headers = diff_json(resp_info['headers'], exp_headers)
+    if diff_headers:
+        diff_content['headers'] = diff_headers
+
+    exp_body = exp_resp_json.get('body', None)
+    if exp_body is None:
+        diff_body = {}
+    elif type(exp_body) != type(resp_info['body']):
+        diff_body = {
+            'actual value': resp_info['body'],
+            'expected value': exp_body
+        }
+    elif isinstance(exp_body, str):
+        if exp_body != resp_info['body']:
+            diff_body = {
+                'actual value': resp_info['body'],
+                'expected value': exp_body
+            }
+    elif isinstance(exp_body, dict):
+        diff_body = diff_json(resp_info['body'], exp_body)
+
+    if diff_body:
+        diff_content['body'] = diff_body
+
+    return diff_content
+
 
 if __name__ == '__main__':
     # print(gen_random_string(8))

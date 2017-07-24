@@ -104,3 +104,25 @@ class TestMockServer(TestBase):
         url = '%s/status_code/%d/' % (self.host, status_code)
         resp = self.client.get(url)
         self.assertEqual(status_code, resp.status_code)
+
+    def test_get_response_with_headers(self):
+        headers = {
+            'test01': 123,
+            'test02': 456
+        }
+        url = '%s/response_headers/' % self.host
+        resp = self.client.post(url, json=headers)
+        self.assertIn('test01', resp.headers)
+        self.assertEqual('456', resp.headers['test02'])
+
+    def test_get_custom_response(self):
+        exp_resp = {
+            'headers': {
+                'test01': 123,
+                'test02': 456
+            }
+        }
+        url = '%s/custom_response/' % self.host
+        resp = self.client.post(url, json=exp_resp)
+        self.assertIn('test01', resp.headers)
+        self.assertEqual('456', resp.headers['test02'])
