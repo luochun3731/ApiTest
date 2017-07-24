@@ -21,3 +21,6 @@ class Runner:
         diff_content = utils.diff_response(resp, test_case['response'])
         result = False if diff_content else True
         return result, diff_content
+
+    def run_test_case_suite(self, test_case_sets):
+        return [self.run_single_test_case(test_case) for test_case in test_case_sets]

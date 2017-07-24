@@ -1,6 +1,9 @@
+import os
+
 import requests
 
 from api_test import runner
+from api_test import utils
 from test.test_base import TestBase
 
 
@@ -87,3 +90,11 @@ class TestRunner(TestBase):
                              }
                          }
                          )
+
+    def test_run_test_case_suite_success(self):
+        test_case_file_path = os.path.join(os.getcwd(), 'test/data/demo.json')
+        test_cases = [tcs['test'] for tcs in utils.load_test_cases(test_case_file_path)]
+        print(test_cases)
+        result = self.runner.run_test_case_suite(test_cases)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result, [(True, {}), (True, {})])
