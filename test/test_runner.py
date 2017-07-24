@@ -91,10 +91,18 @@ class TestRunner(TestBase):
                          }
                          )
 
-    def test_run_test_case_suite_success(self):
+    def test_run_test_case_suite_success_json(self):
         test_case_file_path = os.path.join(os.getcwd(), 'test/data/demo.json')
         test_cases = [tcs['test'] for tcs in utils.load_test_cases(test_case_file_path)]
         print(test_cases)
+        result = self.runner.run_test_case_suite(test_cases)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result, [(True, {}), (True, {})])
+
+    def test_run_test_case_suite_success_yaml(self):
+        test_case_file_path = os.path.join(os.getcwd(), 'test/data/demo.yaml')
+        test_cases = [tcs['test'] for tcs in utils.load_test_cases(test_case_file_path)]
+        # print(test_cases)
         result = self.runner.run_test_case_suite(test_cases)
         self.assertEqual(len(result), 2)
         self.assertEqual(result, [(True, {}), (True, {})])

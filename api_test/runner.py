@@ -19,6 +19,7 @@ class Runner:
 
         resp = self.client.request(url=url, method=method, **req_kwargs)
         diff_content = utils.diff_response(resp, test_case['response'])
+        print(diff_content)
         result = False if diff_content else True
         return result, diff_content
 
