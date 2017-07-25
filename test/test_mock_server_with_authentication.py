@@ -20,7 +20,7 @@ class TestMockServerWithAuthentication(TestBase):
 
     def clear_users(self):
         url = '%s/api/users/' % self.host
-        return self.client.delete(url)
+        return self.client.delete(url, headers=self.build_headers())
 
     def get_all_users(self):
         url = "%s/api/users/" % self.host
@@ -121,7 +121,7 @@ class TestMockServerWithAuthentication(TestBase):
             'test02': 456
         }
         url = '%s/response_headers/' % self.host
-        resp = self.client.post(url, json=headers)
+        resp = self.client.post(url, json=headers, headers=self.build_headers(json.dumps(headers)))
         self.assertIn('test01', resp.headers)
         self.assertEqual('456', resp.headers['test02'])
 
@@ -133,6 +133,6 @@ class TestMockServerWithAuthentication(TestBase):
             }
         }
         url = '%s/custom_response/' % self.host
-        resp = self.client.post(url, json=exp_resp)
+        resp = self.client.post(url, json=exp_resp, headers=self.build_headers(json.dumps(exp_resp)))
         self.assertIn('test01', resp.headers)
         self.assertEqual('456', resp.headers['test02'])
