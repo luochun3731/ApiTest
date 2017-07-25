@@ -1,12 +1,19 @@
+import hashlib
 import json
 import logging
 import os
+from functools import wraps
 from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask
 from flask import request, make_response
 
 app = Flask(__name__)
+
+
+def start_mock_server():
+    app.run()
+
 users = {
     'uid1': {
         'name': 'name1',
@@ -17,6 +24,10 @@ users = {
         'password': 'pwd2'
     }
 }
+
+AUTHENTICATION = False
+TOKEN = 'SDAFG354564dsfgdsg'
+
 
 log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'log/server.log')
 # log_file = os.path.join(os.getcwd(), 'log/server.log')
@@ -42,21 +53,42 @@ app.logger.addHandler(server_log)
 app.logger.addHandler(console)
 
 
-def start_mock_server():
-    app.run()
+def authentication(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not AUTHENTICATION:
+            return func(*args, **kwargs)
+        try:
+            req_headers = request.headers
+            req_authorization = req_headers['Authorization']
+            random_str = req_headers['Random']
+            data = request.data.decode('utf-8')
+            authorization_str = ''.join([TOKEN, data, random_str])
+            authorization = hashlib.md5(authorization_str.encode('utf-8')).hexdigest()
+            print('authorization' + authorization)
+            print('req_authorization' + req_authorization)
+            assert authorization == req_authorization
+            return func(*args, **kwargs)
+        except (KeyError, AssertionError):
+            return 'Authorization failed!', 403
+
+    return wrapper
 
 
 @app.route('/')
+@authentication
 def index():
     return 'Hello Python!'
 
 
 @app.route('/status_code/<int:status_code>/')
+@authentication
 def get_response_with_status_code(status_code):
     return 'Status Code: %d' % status_code, status_code
 
 
 @app.route('/response_headers/', methods=['POST'])
+@authentication
 def get_response_with_headers():
     headers_dict = request.get_json()
     content = 'Response headers: %s' % json.dumps(headers_dict)
@@ -67,6 +99,7 @@ def get_response_with_headers():
 
 
 @app.route('/custom_response/', methods=['POST'])
+@authentication
 def get_custom_response():
     exp_resp_json = request.get_json()
     status_code = exp_resp_json.get('status_code', 200)
@@ -79,6 +112,7 @@ def get_custom_response():
 
 
 @app.route('/api/users/')
+@authentication
 def get_all_users():
     user_list = [user for uid, user in users.items()]
     result = {
@@ -93,6 +127,7 @@ def get_all_users():
 
 
 @app.route('/api/users/<int:uid>/')
+@authentication
 def get_user(uid):
     user = users.get(uid, {})
     if user:
@@ -114,6 +149,7 @@ def get_user(uid):
 
 
 @app.route('/api/users/<int:uid>/', methods=['POST'])
+@authentication
 def create_user(uid):
     app.logger.info('before create: ' + str(users))
     user = request.get_json()
@@ -137,6 +173,7 @@ def create_user(uid):
 
 
 @app.route('/api/users/<int:uid>/', methods=['PUT'])
+@authentication
 def update_user(uid):
     user = users.get(uid, {})
     if user:
@@ -157,6 +194,7 @@ def update_user(uid):
 
 
 @app.route('/api/users/<int:uid>/', methods=['DELETE'])
+@authentication
 def delete_user(uid):
     user = users.pop(uid, {})
     if user:
@@ -176,6 +214,7 @@ def delete_user(uid):
 
 
 @app.route('/api/users/', methods=['DELETE'])
+@authentication
 def clear_users():
     users.clear()
     result = {
