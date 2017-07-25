@@ -112,7 +112,7 @@ class TestMockServerWithAuthentication(TestBase):
     def test_get_response_with_status_code(self):
         status_code = random.randint(200, 520)
         url = '%s/status_code/%d/' % (self.host, status_code)
-        resp = self.client.get(url)
+        resp = self.client.get(url, headers=self.build_headers())
         self.assertEqual(status_code, resp.status_code)
 
     def test_get_response_with_headers(self):
