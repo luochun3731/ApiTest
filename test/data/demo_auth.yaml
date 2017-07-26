@@ -5,8 +5,8 @@
     method: POST
     headers:
       Content-Type: application/json
-      authorization: a83de0ff8d2e896dbd8efb81ba14e17d
-      random: A2dEx
+      authorization: fd2ac95bc96d37bab4ad897c7fc44740
+      random: 5Bq3jZk4
     json:
       name: "user1"
       password: "123456"
@@ -25,8 +25,8 @@
     method: POST
     headers:
       Content-Type: application/json
-      authorization: a83de0ff8d2e896dbd8efb81ba14e17d
-      random: A2dEx
+      authorization: fd2ac95bc96d37bab4ad897c7fc44740
+      random: 5Bq3jZk4
     json:
       name: "user1"
       password: "123456"

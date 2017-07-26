@@ -119,6 +119,8 @@ def diff_response(resp, exp_resp_json):
 
 
 if __name__ == '__main__':
-    print(gen_md5('debugtalk', handle_req_data({'name': 'user1', 'password': '123456'}), 'A2dEx'))
+    print(gen_random_string(8))
+    # print(gen_md5('debugtalk', handle_req_data({'name': 'user1', 'password': '123456'}), 'A2dEx'))
+    print(gen_md5('SDAFG354564dsfgdsg', handle_req_data({'name': 'user1', 'password': '123456'}), '5Bq3jZk4'))
     print(load_yaml_file(r'I:\MyProject\ApiTest\test\data\demo.yaml'))
     print(type(load_yaml_file(r'I:\MyProject\ApiTest\test\data\demo.yaml')))

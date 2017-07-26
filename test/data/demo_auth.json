@@ -6,8 +6,8 @@
       "method": "POST",
       "headers": {
         "content-type": "application/json",
-        "authorization": "a83de0ff8d2e896dbd8efb81ba14e17d",
-        "random": "kl4RT5"
+        "authorization": "fd2ac95bc96d37bab4ad897c7fc44740",
+        "random": "5Bq3jZk4"
       },
       "json": {
         "name": "user1",
@@ -32,8 +32,8 @@
       "method": "POST",
       "headers": {
         "content-type": "application/json",
-        "authorization": "a83de0ff8d2e896dbd8efb81ba14e17d",
-        "random": "k24DT5"
+        "authorization": "fd2ac95bc96d37bab4ad897c7fc44740",
+        "random": "5Bq3jZk4"
       },
       "json": {
         "name": "user1",
