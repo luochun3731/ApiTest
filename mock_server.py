@@ -1,4 +1,3 @@
-import hashlib
 import json
 import logging
 import os
@@ -7,6 +6,8 @@ from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask
 from flask import request, make_response
+
+from api_test import utils
 
 app = Flask(__name__)
 
@@ -62,11 +63,8 @@ def authentication(func):
             req_headers = request.headers
             req_authorization = req_headers['Authorization']
             random_str = req_headers['Random']
-            data = request.data.decode('utf-8')
-            authorization_str = ''.join([TOKEN, data, random_str])
-            authorization = hashlib.md5(authorization_str.encode('utf-8')).hexdigest()
-            print('authorization' + authorization)
-            print('req_authorization' + req_authorization)
+            data = utils.handle_req_data(request.data)
+            authorization = utils.gen_md5(TOKEN, data, random_str)
             assert authorization == req_authorization
             return func(*args, **kwargs)
         except (KeyError, AssertionError):

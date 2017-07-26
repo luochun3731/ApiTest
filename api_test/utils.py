@@ -9,6 +9,21 @@ import yaml
 from api_test.exception import ParamsError
 
 
+def handle_req_data(data):
+    if not data:
+        return data
+    if isinstance(data, bytes):
+        data = data.decode('utf-8')
+    if isinstance(data, str):
+        try:
+            data = json.loads(data)
+        except ValueError:
+            pass
+    if isinstance(data, dict):
+        data = json.dumps(data, sort_keys=True)
+    return data
+
+
 def gen_random_string(str_len):
     return ''.join([random.choice(string.ascii_letters + string.digits) for _ in range(str_len)])
 

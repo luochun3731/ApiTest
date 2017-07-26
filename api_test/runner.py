@@ -15,7 +15,7 @@ class Runner:
             url = req_kwargs.pop('url')
             method = req_kwargs.pop('method')
         except KeyError:
-            raise exception.ParamsError('Params Error!')
+            raise exception.ParamsError('URL or METHOD missed!')
 
         resp = self.client.request(url=url, method=method, **req_kwargs)
         diff_content = utils.diff_response(resp, test_case['response'])

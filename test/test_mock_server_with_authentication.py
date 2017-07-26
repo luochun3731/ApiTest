@@ -1,4 +1,3 @@
-import json
 import random
 
 import requests
@@ -32,7 +31,7 @@ class TestMockServerWithAuthentication(TestBase):
             'name': name,
             'password': password
         }
-        headers = self.build_headers(json.dumps(data))
+        headers = self.build_headers(data)
         return self.client.post(url, json=data, headers=headers)
 
     def get_user(self, uid):
@@ -45,7 +44,7 @@ class TestMockServerWithAuthentication(TestBase):
             'name': name,
             'password': password
         }
-        headers = self.build_headers(json.dumps(data))
+        headers = self.build_headers(data)
         return self.client.put(url, json=data, headers=headers)
 
     def delete_user(self, uid):
@@ -121,7 +120,7 @@ class TestMockServerWithAuthentication(TestBase):
             'test02': 456
         }
         url = '%s/response_headers/' % self.host
-        resp = self.client.post(url, json=headers, headers=self.build_headers(json.dumps(headers)))
+        resp = self.client.post(url, json=headers, headers=self.build_headers(headers))
         self.assertIn('test01', resp.headers)
         self.assertEqual('456', resp.headers['test02'])
 
@@ -133,6 +132,6 @@ class TestMockServerWithAuthentication(TestBase):
             }
         }
         url = '%s/custom_response/' % self.host
-        resp = self.client.post(url, json=exp_resp, headers=self.build_headers(json.dumps(exp_resp)))
+        resp = self.client.post(url, json=exp_resp, headers=self.build_headers(exp_resp))
         self.assertIn('test01', resp.headers)
         self.assertEqual('456', resp.headers['test02'])
