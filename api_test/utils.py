@@ -10,10 +10,13 @@ from api_test.exception import ParamsError
 
 
 def handle_req_data(data):
-    if not data:
-        return data
+
     if isinstance(data, bytes):
         data = data.decode('utf-8')
+
+    if not data:
+        return data
+
     if isinstance(data, str):
         try:
             data = json.loads(data)
@@ -116,6 +119,6 @@ def diff_response(resp, exp_resp_json):
 
 
 if __name__ == '__main__':
-    print(gen_md5('A2dEx', 'debugtalk', "{'name': 'user1','password': '123456'}"))
+    print(gen_md5('debugtalk', handle_req_data({'name': 'user1', 'password': '123456'}), 'A2dEx'))
     print(load_yaml_file(r'I:\MyProject\ApiTest\test\data\demo.yaml'))
     print(type(load_yaml_file(r'I:\MyProject\ApiTest\test\data\demo.yaml')))
