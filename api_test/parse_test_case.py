@@ -4,10 +4,10 @@ from api_test import exception
 
 
 class TestCaseParser():
-    def __init__(self, bind_variables={}):
-        self.bind_variables = bind_variables
+    def __init__(self, variable_binds={}):
+        self.variable_binds = variable_binds
 
-    def parse(self, test_case_template):
+    def parse(self, test_case_template, variable_binds={}):
         """ parse test_case_template, replace all variables with bind value.
                 variables marker: ${variable}.
                 @param test_case_template
@@ -31,7 +31,10 @@ class TestCaseParser():
                             "msg": "user created successfully."
                         }
                     }
+                :param variable_binds: variable binds of test case parser instance will be updated
         """
+        if variable_binds:
+            self.variable_binds.update(variable_binds)
         return self.substitute(test_case_template)
 
     def substitute(self, content):
@@ -42,7 +45,7 @@ class TestCaseParser():
             matched = re.match(r'(.*)\$\{(.*)\}(.*)', content)
             if matched:
                 variable_name = matched.group(2)
-                value = self.bind_variables.get(variable_name)
+                value = self.variable_binds.get(variable_name)
                 if value is None:
                     raise exception.ParamsError('%s is not defined in bind variables!' % variable_name)
                 if matched.group(1) or matched.group(3):
