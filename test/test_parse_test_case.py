@@ -67,14 +67,15 @@ class TestParseTestCase(unittest.TestCase):
     def test_parse_test_case_with_new_variable_binds(self):
         test_case = {
             "request": {
-                "url": "http://127.0.0.1:5000/api/users/${uid}/",
+                "url": "http://127.0.0.1:5000/api/users/${uid}",
                 "method": "${method}"
             }
         }
         new_variable_binds = {
             "method": "GET"
         }
-        parsed_test_case = self.test_case_parser.parse(test_case, new_variable_binds)
+        self.test_case_parser.update_variables_binds(new_variable_binds)
+        parsed_test_case = self.test_case_parser.parse(test_case)
         self.assertIn('method', self.test_case_parser.variable_binds)
         self.assertEqual(parsed_test_case['request']['method'],
                          new_variable_binds['method'])

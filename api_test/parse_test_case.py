@@ -7,6 +7,15 @@ class TestCaseParser():
     def __init__(self, variable_binds={}):
         self.variable_binds = variable_binds
 
+    def update_variables_binds(self, new_variable_binds):
+        """
+        update variables binds with new mapping.
+        :param new_variable_binds:
+        :return:
+        """
+        if new_variable_binds:
+            self.variable_binds.update(new_variable_binds)
+
     def parse(self, test_case_template, variable_binds={}):
         """ parse test_case_template, replace all variables with bind value.
                 variables marker: ${variable}.
