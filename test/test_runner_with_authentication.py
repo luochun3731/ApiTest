@@ -21,13 +21,13 @@ class TestRunnerWithAuthentication(TestBase):
     def test_run_single_test_case_json(self):
         test_case_file = os.path.join(os.getcwd(), 'test/data/demo_auth.json')
         test_cases = utils.load_test_cases(test_case_file)
-        result, _ = self.runner.run_single_test_case(test_cases[0])
+        result, _ = self.runner.run_test(test_cases[0])
         self.assertTrue(result)
 
     def test_run_single_test_case_yaml(self):
         test_case_file = os.path.join(os.getcwd(), 'test/data/demo_auth.yaml')
         test_cases = utils.load_test_cases(test_case_file)
-        result, _ = self.runner.run_single_test_case(test_cases[0])
+        result, _ = self.runner.run_test(test_cases[0])
         self.assertTrue(result)
 
     def test_run_test_case_suite_success_json(self):

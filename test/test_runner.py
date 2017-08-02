@@ -41,7 +41,7 @@ class TestRunner(TestBase):
                 }
             }
         }
-        result, _ = self.runner.run_single_test_case(test_case)
+        result, _ = self.runner.run_test(test_case)
         self.assertTrue(result)
 
     def test_run_single_test_case_fail(self):
@@ -69,7 +69,7 @@ class TestRunner(TestBase):
                 }
             }
         }
-        result, diff_content = self.runner.run_single_test_case(test_case)
+        result, diff_content = self.runner.run_test(test_case)
         self.assertFalse(result)
         self.assertEqual(
             diff_content['status_code'],
@@ -106,3 +106,11 @@ class TestRunner(TestBase):
         result = self.runner.run_test_case_suite(test_cases)
         self.assertEqual(len(result), 2)
         self.assertEqual(result, [(True, {}), (True, {})])
+
+    def test_run_test_case_template_yaml(self):
+        test_case_file = os.path.join(os.getcwd(), 'test/data/demo_template_separate.yaml')
+        test_cases = utils.load_test_cases(test_case_file)
+        success, _ = self.runner.run_test(test_cases[0])
+        self.assertTrue(success)
+        success, _ = self.runner.run_test(test_cases[1])
+        self.assertFalse(success)
