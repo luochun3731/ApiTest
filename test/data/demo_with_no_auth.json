@@ -23,19 +23,7 @@
           "success": true,
           "msg": "user created successfully!"
         }
-      },
-      "validators": [
-        {
-          "check": "status_code",
-          "comparator": "eq",
-          "expected": 201
-        },
-        {
-          "check": "content.success",
-          "comparator": "eq",
-          "expected": true
-        }
-      ]
+      }
     }
   },
   {
@@ -61,19 +49,7 @@
           "success": false,
           "msg": "user already existed!"
         }
-      },
-      "validators": [
-        {
-          "check": "status_code",
-          "comparator": "eq",
-          "expected": 500
-        },
-        {
-          "check": "content.success",
-          "comparator": "eq",
-          "expected": false
-        }
-      ]
+      }
     }
   }
 ]

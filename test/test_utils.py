@@ -9,7 +9,7 @@ from test.test_base import TestBase
 
 class TestUtils(TestBase):
     def test_load_json_file(self):
-        file_name = os.path.join(os.getcwd(), 'test/data/demo.json')
+        file_name = os.path.join(os.getcwd(), 'test/data/demo_with_no_auth.json')
         cases = utils.load_json_file(file_name)
         self.assertEqual(len(cases), 2)
         self.assertEqual('create user which does not exist', cases[0]['test']['name'])
@@ -19,7 +19,7 @@ class TestUtils(TestBase):
         self.assertEqual('create user which existed', cases[1]['test']['name'])
 
     def test_load_yaml_file(self):
-        file_name = os.path.join(os.getcwd(), 'test/data/demo.yaml')
+        file_name = os.path.join(os.getcwd(), 'test/data/demo_with_no_auth.yaml')
         cases = utils.load_yaml_file(file_name)
         self.assertEqual(len(cases), 2)
         self.assertEqual('create user which does not exist', cases[0]['test']['name'])
@@ -34,7 +34,7 @@ class TestUtils(TestBase):
             utils.load_test_cases(test_case_path)
 
     def test_load_json_cases(self):
-        test_case_path = os.path.join(os.getcwd(), 'test/data/demo.json')
+        test_case_path = os.path.join(os.getcwd(), 'test/data/demo_with_no_auth.json')
         cases = utils.load_test_cases(test_case_path)
         self.assertEqual(len(cases), 2)
         self.assertEqual('create user which does not exist', cases[0]['test']['name'])
@@ -44,7 +44,7 @@ class TestUtils(TestBase):
         self.assertEqual('create user which existed', cases[1]['test']['name'])
 
     def test_load_yaml_cases(self):
-        test_case_path = os.path.join(os.getcwd(), 'test/data/demo.yaml')
+        test_case_path = os.path.join(os.getcwd(), 'test/data/demo_with_no_auth.yaml')
         cases = utils.load_test_cases(test_case_path)
         self.assertEqual(len(cases), 2)
         self.assertEqual('create user which does not exist', cases[0]['test']['name'])

@@ -19,28 +19,29 @@ class TestRunnerWithAuthentication(TestBase):
         return requests.delete(url, headers=self.build_headers())
 
     def test_run_single_test_case_json(self):
-        test_case_file = os.path.join(os.getcwd(), 'test/data/demo_auth.json')
+        test_case_file = os.path.join(os.getcwd(), 'test/data/demo_with_auth.json')
         test_cases = utils.load_test_cases(test_case_file)
-        result, _ = self.runner.run_test(test_cases[0])
+        result, _ = self.runner.run_test(test_cases[0]['test'])
         self.assertTrue(result)
 
     def test_run_single_test_case_yaml(self):
-        test_case_file = os.path.join(os.getcwd(), 'test/data/demo_auth.yaml')
+        test_case_file = os.path.join(os.getcwd(), 'test/data/demo_with_auth.yaml')
         test_cases = utils.load_test_cases(test_case_file)
-        result, _ = self.runner.run_test(test_cases[0])
+        result, _ = self.runner.run_test(test_cases[0]['test'])
         self.assertTrue(result)
 
     def test_run_test_case_suite_success_json(self):
-        test_case_file_path = os.path.join(os.getcwd(), 'test/data/demo_auth.json')
+        test_case_file_path = os.path.join(os.getcwd(), 'test/data/demo_with_auth.json')
         test_cases = utils.load_test_cases(test_case_file_path)
         print(test_cases)
-        result = self.runner.run_test_case_suite(test_cases)
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result, [(True, {}), (True, {})])
+        results = self.runner.run_test_case_suite(test_cases)
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results, [(True, {}), (True, {})])
 
     def test_run_test_case_suite_success_yaml(self):
-        test_case_file_path = os.path.join(os.getcwd(), 'test/data/demo_auth.yaml')
+        test_case_file_path = os.path.join(os.getcwd(), 'test/data/demo_with_auth.yaml')
         test_cases = utils.load_test_cases(test_case_file_path)
-        result = self.runner.run_test_case_suite(test_cases)
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result, [(True, {}), (True, {})])
+        print(test_cases)
+        results = self.runner.run_test_case_suite(test_cases)
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results, [(True, {}), (True, {})])

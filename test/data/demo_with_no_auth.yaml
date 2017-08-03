@@ -1,0 +1,35 @@
+- test:
+    name: create user which does not exist
+    request:
+        url: http://127.0.0.1:5000/api/users/1000/
+        method: POST
+        headers:
+            Content-Type: application/json
+        json:
+            name: test01
+            password: qwe123
+    response:
+        status_code: 200
+        headers:
+            Content-Type: application/json
+        body:
+            success: true
+            msg: user created successfully!
+
+- test:
+    name: create user which does exist
+    request:
+        url: http://127.0.0.1:5000/api/users/1000/
+        method: POST
+        headers:
+            Content-Type: application/json
+        json:
+            name: test02
+            password: qwer1234
+    response:
+        status_code: 500
+        headers:
+            Content-Type: application/json
+        body:
+            success: false
+            msg: user already existed!
